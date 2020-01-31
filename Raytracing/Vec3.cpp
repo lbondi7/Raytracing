@@ -21,39 +21,39 @@ void Vec3::operator=(const Vec3& vector)
 	z = vector.z;
 }
 
-Vec3& Vec3::operator+=(const Vec3& v2)
+Vec3& Vec3::operator+=(const Vec3& vec)
 {
-	x += v2.x;
-	y += v2.y;
-	z += v2.z;
+	x += vec.x;
+	y += vec.y;
+	z += vec.z;
 
 	return *this;
 }
 
 
-Vec3& Vec3::operator-=(const Vec3& v2)
+Vec3& Vec3::operator-=(const Vec3& vec)
 {
-	x -= v2.x;
-	y -= v2.y;
-	z -= v2.z;
+	x -= vec.x;
+	y -= vec.y;
+	z -= vec.z;
 
 	return *this;
 }
 
-Vec3& Vec3::operator/=(const Vec3& v2)
+Vec3& Vec3::operator/=(const Vec3& vec)
 {
-	x /= v2.x;
-	y /= v2.y;
-	z /= v2.z;
+	x /= vec.x;
+	y /= vec.y;
+	z /= vec.z;
 
 	return *this;
 }
 
-Vec3& Vec3::operator*=(const Vec3& v2)
+Vec3& Vec3::operator*=(const Vec3& vec)
 {
-	x *= v2.x;
-	y *= v2.y;
-	z *= v2.z;
+	x *= vec.x;
+	y *= vec.y;
+	z *= vec.z;
 
 	return *this;
 }
