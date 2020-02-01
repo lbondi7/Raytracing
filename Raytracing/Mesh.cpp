@@ -8,10 +8,10 @@
 void Mesh::Load(const std::string& mesh)
 {
 
-	//meshes[mesh] = meshCount;
-	//++meshCount;
-	//vertices.resize(meshCount);
-	//indices.resize(meshCount);
+	meshes[mesh] = meshCount;
+	++meshCount;
+	vertices.resize(meshCount);
+	indices.resize(meshCount);
 
 	std::string filePath = "models/" + mesh + ".obj";
 
@@ -41,14 +41,20 @@ void Mesh::Load(const std::string& mesh)
 				1.0f - attrib.texcoords[2 * index.texcoord_index + 1]
 			};
 
+			vertex.normal = {
+				attrib.normals[3 * index.normal_index + 0],
+				attrib.normals[3 * index.normal_index + 1],
+				attrib.normals[3 * index.normal_index + 2]
+			};
+
 			vertex.color = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
-				vertices[0].push_back(vertex);
+				uniqueVertices[vertex] = static_cast<uint32_t>(vertices[meshes[mesh]].size());
+				vertices[meshes[mesh]].push_back(vertex);
 			}
 
-			indices[0].push_back(uniqueVertices[vertex]);
+			indices[meshes[mesh]].push_back(uniqueVertices[vertex]);
 		}
 	}
 
