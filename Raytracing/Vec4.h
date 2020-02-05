@@ -20,6 +20,8 @@ public:
 	Vec4& operator /= (float scale);
 	Vec4& operator *= (float scale);
 
+	//inline Vec3 xyz() { return Vec3(this->x, this->y, this->z); }
+
 	inline float Length() const { return sqrt(x * x + y * y + z * z + w * w); }
 
 	static inline float Dot(const Vec4& v1, const Vec4& v2) {
@@ -84,7 +86,7 @@ inline Vec4 operator-(const Vec4& v1, const Vec4& v2)
 	return Vec4(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z, v1.w - v2.w);
 }
 
-inline Vec4 UnitVector(Vec4 vec)
+inline Vec4 Normalise(Vec4 vec)
 {
 	return vec / vec.Length();
 }

@@ -14,6 +14,13 @@ Vec3::Vec3(const Vec3& vec)
 	z = vec.z;
 }
 
+Vec3::Vec3(const Vec4& vec)
+{
+	x = vec.x;
+	y = vec.y;
+	z = vec.z;
+}
+
 void Vec3::operator=(const Vec3& vector)
 {
 	x = vector.x;

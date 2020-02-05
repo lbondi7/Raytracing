@@ -5,12 +5,21 @@
 #include <map>
 #include <vector>
 
+
 struct Mesh
 {
-	std::vector<std::vector<Vertex>> vertices;
-	std::vector<std::vector<uint32_t>> indices;
+	std::vector<Vertex> vertices;
+	std::vector<uint32_t> indices;
+};
 
-	std::map<std::string, int> meshes;
+struct MeshLoading
+{
+	//std::vector<std::vector<Vertex>> vertices;
+	//std::vector<std::vector<uint32_t>> indices;
+
+	std::vector<Mesh> meshes;
+
+	std::map<std::string, int> meshesID;
 
 	int meshCount = 0;
 

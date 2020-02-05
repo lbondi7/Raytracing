@@ -4,14 +4,16 @@
 #include <tiny_obj_loader.h>
 
 #include <unordered_map>
+#include <random>
 
-void Mesh::Load(const std::string& mesh)
+void MeshLoading::Load(const std::string& mesh)
 {
 
-	meshes[mesh] = meshCount;
+	meshesID[mesh] = meshCount;
 	++meshCount;
-	vertices.resize(meshCount);
-	indices.resize(meshCount);
+	meshes.resize(meshCount);
+	//vertices.resize(meshCount);
+	//indices.resize(meshCount);
 
 	std::string filePath = "models/" + mesh + ".obj";
 
@@ -25,6 +27,9 @@ void Mesh::Load(const std::string& mesh)
 	}
 
 	std::unordered_map<Vertex, uint32_t> uniqueVertices = {};
+
+	std::random_device rd;
+	std::uniform_real_distribution<float> rand(0.0f, 1.0f);
 
 	for (const auto& shape : shapes) {
 		for (const auto& index : shape.mesh.indices) {
@@ -47,14 +52,14 @@ void Mesh::Load(const std::string& mesh)
 				attrib.normals[3 * index.normal_index + 2]
 			};
 
-			vertex.color = { 1.0f, 1.0f, 1.0f, 1.0f };
+			vertex.colour = { rand(rd), rand(rd), rand(rd), rand(rd) };
 
 			if (uniqueVertices.count(vertex) == 0) {
-				uniqueVertices[vertex] = static_cast<uint32_t>(vertices[meshes[mesh]].size());
-				vertices[meshes[mesh]].push_back(vertex);
+				uniqueVertices[vertex] = static_cast<uint32_t>(meshes[meshesID[mesh]].vertices.size());
+				meshes[meshesID[mesh]].vertices.push_back(vertex);
 			}
 
-			indices[meshes[mesh]].push_back(uniqueVertices[vertex]);
+			meshes[meshesID[mesh]].indices.push_back(uniqueVertices[vertex]);
 		}
 	}
 

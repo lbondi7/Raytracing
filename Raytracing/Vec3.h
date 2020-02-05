@@ -1,4 +1,6 @@
 #pragma once
+#include "Vec4.h"
+
 #include <math.h>
 
 class Vec3
@@ -8,6 +10,7 @@ public:
 	Vec3() = default;
 	Vec3(float x, float y, float z);
 	Vec3(const Vec3& vec);
+	Vec3(const Vec4& vec);
 
 	void operator = (const Vec3& vec);
 	inline const Vec3& operator+() const { return *this; }
@@ -31,17 +34,24 @@ public:
 			(v1.x * v2.y - v1.y * v2.x));
 	}
 
-	float x = 0;
-	float y = 0;
-	float z = 0;
+	static inline float Distance(const Vec3& v1, const Vec3& v2) {
+		return sqrt((v1.x - v2.x) * (v1.x - v2.x) + 
+			(v1.y - v2.y) * (v1.y - v2.y) + 
+			(v1.z - v2.z) * (v1.z - v2.z));
+	}
 
-	void MakeUnitVector();
+	static inline Vec3 Normalise(Vec3 v) { return v / v.Length(); }
 
+	void Normalise();
+
+	float x = 0.0f;
+	float y = 0.0f;
+	float z = 0.0f;
 
 
 };
 
-inline void Vec3::MakeUnitVector()
+inline void Vec3::Normalise()
 {
 	float k = 1.0 / sqrt(x * x + y * y + z * z);
 	x *= k;
@@ -56,7 +66,7 @@ inline bool operator==(const Vec3& v1, const Vec3& v2)
 
 inline Vec3 operator*(const Vec3& v1, float scale)
 {
-	return Vec3(scale * v1.x, scale * v1.y, scale * v1.z);
+	return Vec3(v1.x * scale, v1.y * scale, v1.z * scale);
 }
 
 inline Vec3 operator*(float scale, const Vec3& v1)
@@ -87,9 +97,4 @@ inline Vec3 operator+(const Vec3& v1, const Vec3& v2)
 inline Vec3 operator-(const Vec3& v1, const Vec3& v2)
 {
 	return Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
-}
-
-inline Vec3 UnitVector(Vec3 v)
-{
-	return v / v.Length();
 }
