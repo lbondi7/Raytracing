@@ -2,6 +2,7 @@
 
 #include "Object.h"
 #include "Camera.h"
+#include "BVH.h"
 
 #include "SFML/Graphics.hpp"
 
@@ -11,6 +12,8 @@ public:
 
 	Scene() = default;
 	~Scene();
+
+	void Colour(const Ray& ray, Vec3& colour);
 
 	void Init(sf::RenderWindow* _window);
 
@@ -29,9 +32,13 @@ private:
 	sf::Image image;
 	sf::Texture texture;
 
-	Object obj;
+	float xish = 0.0f;
+
+	std::vector<Object> objects;
+	int objCount = 100;
 
 	Camera camera;
-
+	BVH bvh;
+	std::vector<Triangle> tris;
 };
 

@@ -62,5 +62,4 @@ void MeshLoading::Load(const std::string& mesh)
 			meshes[meshesID[mesh]].indices.push_back(uniqueVertices[vertex]);
 		}
 	}
-
 }
