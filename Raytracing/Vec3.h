@@ -40,7 +40,7 @@ public:
 			(v1.z - v2.z) * (v1.z - v2.z));
 	}
 
-	static inline Vec3 Normalise(Vec3 v) { return v / v.Length(); }
+	static inline Vec3 Normalise(const Vec3& v) { return v / v.Length(); }
 
 	void Normalise();
 
@@ -79,7 +79,7 @@ inline Vec3 operator*(const Vec3& v1, const Vec3& v2)
 	return Vec3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
 }
 
-inline Vec3 operator/(const Vec3& v1, float scale)
+inline Vec3 operator/(Vec3 v1, float scale)
 {
 	return Vec3(v1.x / scale, v1.y / scale, v1.z / scale);
 }

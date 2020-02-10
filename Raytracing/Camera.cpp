@@ -9,7 +9,7 @@ Camera::Camera(const Vec3& pos, const Vec3& lookAt)
 void Camera::SetViewMatrix()
 {
     Vec3 forward = Vec3::Normalise(position - lookAtPos);
-    Vec3 right = Vec3::Cross(Vec3::Normalise({0, 1, 0}), forward);
+    Vec3 right = Vec3::Cross(Vec3::Normalise(Vec3(0, 1, 0)), forward);
     Vec3 up = Vec3::Cross(forward, right);
 
 
