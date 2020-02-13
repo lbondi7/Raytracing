@@ -2,37 +2,39 @@
 
 Vec3::Vec3(float x, float y, float z)
 {
-	this->x = x;
-	this->y = y;
-	this->z = z;
+	axis[0] = x;
+	axis[1] = y;
+	axis[2] = z;
 }
 
 Vec3::Vec3(const Vec3& vec)
 {
-	x = vec.x;
-	y = vec.y;
-	z = vec.z;
+	axis[0] = vec.axis[0];
+	axis[1] = vec.axis[1];
+	axis[2] = vec.axis[2];
 }
 
 Vec3::Vec3(const Vec4& vec)
 {
-	x = vec.x;
-	y = vec.y;
-	z = vec.z;
+	axis[0] = vec.axis[0];
+	axis[1] = vec.axis[1];
+	axis[2] = vec.axis[2];
+
 }
 
 void Vec3::operator=(const Vec3& vector)
 {
-	x = vector.x;
-	y = vector.y;
-	z = vector.z;
+	axis[0] = vector.axis[0];
+	axis[1] = vector.axis[1];
+	axis[2] = vector.axis[2];
+
 }
 
 Vec3& Vec3::operator+=(const Vec3& vec)
 {
-	x += vec.x;
-	y += vec.y;
-	z += vec.z;
+	axis[0] += vec.axis[0];
+	axis[1] += vec.axis[1];
+	axis[2] += vec.axis[2];
 
 	return *this;
 }
@@ -40,45 +42,45 @@ Vec3& Vec3::operator+=(const Vec3& vec)
 
 Vec3& Vec3::operator-=(const Vec3& vec)
 {
-	x -= vec.x;
-	y -= vec.y;
-	z -= vec.z;
+	axis[0] -= vec.axis[0];
+	axis[1] -= vec.axis[1];
+	axis[2] -= vec.axis[2];
 
 	return *this;
 }
 
 Vec3& Vec3::operator/=(const Vec3& vec)
 {
-	x /= vec.x;
-	y /= vec.y;
-	z /= vec.z;
+	axis[0] /= vec.axis[0];
+	axis[1] /= vec.axis[1];
+	axis[2] /= vec.axis[2];
 
 	return *this;
 }
 
 Vec3& Vec3::operator*=(const Vec3& vec)
 {
-	x *= vec.x;
-	y *= vec.y;
-	z *= vec.z;
+	axis[0] *= vec.axis[0];
+	axis[1] *= vec.axis[1];
+	axis[2] *= vec.axis[2];
 
 	return *this;
 }
 
 Vec3& Vec3::operator/=(float scale)
 {
-	x /= scale;
-	y /= scale;
-	z /= scale;
+	axis[0] /= scale;
+	axis[1] /= scale;
+	axis[2] /= scale;
 
 	return *this;
 }
 
 Vec3& Vec3::operator*=(float scale)
 {
-	x *= scale;
-	y *= scale;
-	z *= scale;
+	axis[0] *= scale;
+	axis[1] *= scale;
+	axis[2] *= scale;
 
 	return *this;
 }

@@ -31,10 +31,10 @@ struct Vertex {
 namespace std {
 	template<> struct hash<Vertex> {
 		size_t operator()(Vertex const& vertex) const {
-			return ((hash<glm::vec3>()(glm::vec3(vertex.pos.x, vertex.pos.y, vertex.pos.z)) ^
-				(hash<glm::vec3>()(glm::vec3(vertex.normal.x, vertex.normal.y, vertex.normal.z))) ^
-				(hash<glm::vec4>()(glm::vec4(vertex.colour.x, vertex.colour.y, vertex.colour.z, vertex.colour.w)) << 1)) >> 1) ^
-				(hash<glm::vec2>()(glm::vec2(vertex.texCoord.x, vertex.texCoord.y)) << 1);
+			return ((hash<glm::vec3>()(glm::vec3(vertex.pos.axis[0], vertex.pos.axis[1], vertex.pos.axis[2])) ^
+				(hash<glm::vec3>()(glm::vec3(vertex.normal.axis[0], vertex.normal.axis[1], vertex.normal.axis[2]))) ^
+				(hash<glm::vec4>()(glm::vec4(vertex.colour.axis[0], vertex.colour.axis[1], vertex.colour.axis[2], vertex.colour.axis[3])) << 1)) >> 1) ^
+				(hash<glm::vec2>()(glm::vec2(vertex.texCoord.axis[0], vertex.texCoord.axis[1])) << 1);
 		}
 	};
 }
@@ -43,9 +43,9 @@ namespace std {
 //namespace std {
 //	template<> struct hash<Vertex> {
 //		size_t operator()(Vertex const& vertex) const {
-//			return ((hash<glm::vec3>()(glm::vec3(vertex.pos.x, vertex.pos.y, vertex.pos.z)) ^
-//				(hash<glm::vec4>()(glm::vec4(vertex.colour.x, vertex.colour.y, vertex.colour.z, vertex.colour.w)) << 1)) >> 1) ^
-//				(hash<glm::vec2>()(glm::vec2(vertex.texCoord.x, vertex.texCoord.y)) << 1);
+//			return ((hash<glm::vec3>()(glm::vec3(vertex.pos.axis[0], vertex.pos.axis[1], vertex.pos.axis[2])) ^
+//				(hash<glm::vec4>()(glm::vec4(vertex.colour.axis[0], vertex.colour.axis[1], vertex.colour.axis[2], vertex.colour.axis[3])) << 1)) >> 1) ^
+//				(hash<glm::vec2>()(glm::vec2(vertex.texCoord.axis[0], vertex.texCoord.axis[1])) << 1);
 //		}
 //	};
 //}

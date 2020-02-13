@@ -2,6 +2,8 @@
 
 #include "Ray.h"
 #include "Bounds.h"
+#include "Triangle.h"
+#include "HitRecord.h"
 
 class Object
 {
@@ -12,11 +14,23 @@ public:
 
 	void Load(const std::string& mesh);
 
+	void Load(const std::string& mesh, const Vec3& _center);
+
 	Vec3 HitObject(const Ray& ray);
+
+	bool Hit(const Ray& ray, Vec3& colour);
+
+	bool Hit(const Ray& ray, HitRecord& rec);
+
+	void Hit(const Ray& ray, std::vector<HitRecord>& hits);
 
 	bool HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2, float& t, float& u, float& v);
 
+	bool HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2, float& t, float& u, float& v, HitRecord& rec);
+
 	Mesh mesh;
+
+	std::vector<Triangle> tris;
 
 	Vec3 center = { 0.0f, 0.0f, 0.0f };
 

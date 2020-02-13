@@ -14,5 +14,7 @@ public:
 
 	Vec3 origin;
 	Vec3 direction;
+	Vec3 invDirection;
+	int sign[3];
 };
 

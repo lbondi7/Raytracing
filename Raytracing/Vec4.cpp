@@ -2,84 +2,84 @@
 
 Vec4::Vec4(float x, float y, float z, float w)
 {
-	this->x = x;
-	this->y = y;
-	this->z = z;
-	this->w = w;
+	this->axis[0] = x;
+	this->axis[1] = y;
+	this->axis[2] = z;
+	this->axis[3] = w;
 }
 
 Vec4::Vec4(const Vec4& vec)
 {
-	x = vec.x;
-	y = vec.y;
-	z = vec.z;
-	w = vec.w;
+	axis[0] = vec.axis[0];
+	axis[1] = vec.axis[1];
+	axis[2] = vec.axis[2];
+	axis[3] = vec.axis[3];
 }
 
 void Vec4::operator=(const Vec4& vec)
 {
-	x = vec.x;
-	y = vec.y;
-	z = vec.z;
-	w = vec.w;
+	axis[0] = vec.axis[0];
+	axis[1] = vec.axis[1];
+	axis[2] = vec.axis[2];
+	axis[3] = vec.axis[3];
 }
 
 Vec4& Vec4::operator+=(const Vec4& vec)
 {
-	x += vec.x;
-	y += vec.y;
-	z += vec.z;
-	w += vec.w;
+	axis[0] += vec.axis[0];
+	axis[1] += vec.axis[1];
+	axis[2] += vec.axis[2];
+	axis[3] += vec.axis[3];
 
 	return *this;
 }
 
 Vec4& Vec4::operator-=(const Vec4& vec)
 {
-	x -= vec.x;
-	y -= vec.y;
-	z -= vec.z;
-	w -= vec.w;
+	axis[0] -= vec.axis[0];
+	axis[1] -= vec.axis[1];
+	axis[2] -= vec.axis[2];
+	axis[3] -= vec.axis[3];
 
 	return *this;
 }
 
 Vec4& Vec4::operator/=(const Vec4& v2)
 {
-	x /= v2.x;
-	y /= v2.y;
-	z /= v2.z;
-	w /= v2.w;
+	axis[0] /= v2.axis[0];
+	axis[1] /= v2.axis[1];
+	axis[2] /= v2.axis[2];
+	axis[3] /= v2.axis[3];
 
 	return *this;
 }
 
 Vec4& Vec4::operator*=(const Vec4& vec)
 {
-	x *= vec.x;
-	y *= vec.y;
-	z *= vec.z;
-	w *= vec.w;
+	axis[0] *= vec.axis[0];
+	axis[1] *= vec.axis[1];
+	axis[2] *= vec.axis[2];
+	axis[3] *= vec.axis[3];
 
 	return *this;
 }
 
 Vec4& Vec4::operator/=(float scale)
 {
-	x /= scale;
-	y /= scale;
-	z /= scale;
-	z /= scale;
+	axis[0] /= scale;
+	axis[1] /= scale;
+	axis[2] /= scale;
+	axis[2] /= scale;
 
 	return *this;
 }
 
 Vec4& Vec4::operator*=(float scale)
 {
-	x *= scale;
-	y *= scale;
-	z *= scale;
-	w *= scale;
+	axis[0] *= scale;
+	axis[1] *= scale;
+	axis[2] *= scale;
+	axis[3] *= scale;
 
 	return *this;
 }
