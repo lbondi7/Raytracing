@@ -15,7 +15,7 @@ void Scene::Colour(const Ray& ray, Vec3& colour)
 {
     std::vector<HitRecord> hits;
 
-    bvh.Search(ray, hits);
+    bvh.Search(ray, hits, img);
 
     if (!hits.empty())
     {
@@ -67,7 +67,8 @@ void Scene::Init(sf::RenderWindow* _window)
         //if(i % 1 && i != 0)
         //    objects[i].Load("iso", Vec3(rand(rd), rand(rd), i * 5));
         //else
-            objects[i].Load("iso", Vec3(rand(rd), rand(rd), i + 5));
+     //   objects[i].Load("cube", Vec3(2.0f, 2.0f, 4));
+        objects[i].Load("cube", Vec3(0.0f, 0.0f, 2));
     }
 
     for (size_t i = 0; i < objects.size(); ++i)
@@ -78,6 +79,9 @@ void Scene::Init(sf::RenderWindow* _window)
         }
     }
 
+    img.Load("textures/mrBeanCube.jpg");
+
+
     bvh.Create(&tris);
     bvh.Build();
 
@@ -86,7 +90,7 @@ void Scene::Init(sf::RenderWindow* _window)
     Vec3 vertical(0.0f, 2.0f, 0.0f);
     Vec3 origin(0.0f, 0.0f, 0.0f);
     int ir, ig, ib;
-    for (int j = 0; j < HEIGHT; ++j)
+    for (int j = HEIGHT - 1; j >= 0; --j)
     {
         for (int i = 0; i < WIDTH; ++i)
         {
@@ -103,12 +107,6 @@ void Scene::Init(sf::RenderWindow* _window)
         }
     }
     texture.update(image);
-
-    //float t;
-//Vec3 unitDirection = Normalise(ray.direction);
-//t = 0.5f * (unitDirection.axis[1] + 1.0f);
-//col =(1.0f - t) * Vec3(1.0f, 1.0f, 1.0f) + t * Vec3(0.5f, 0.7f, 1.0f);
-
 }
 
 void Scene::Update()

@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "Camera.h"
 #include "BVH.h"
+#include "Image.h"
 
 #include "SFML/Graphics.hpp"
 
@@ -35,7 +36,9 @@ private:
 	float xish = 0.0f;
 
 	std::vector<Object> objects;
-	int objCount = 100;
+	int objCount = 1;
+
+	Image img;
 
 	Camera camera;
 	BVH bvh;

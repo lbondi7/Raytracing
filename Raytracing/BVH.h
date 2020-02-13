@@ -4,6 +4,7 @@
 #include "Bounds.h"
 #include "Ray.h"
 #include "HitRecord.h"
+#include "Image.h"
 
 #include <memory>
 
@@ -42,7 +43,6 @@ public:
 	BVH() = default;
 
 	BVH(std::vector<Triangle>* _tris);
-	BVH(std::vector<Vertex>* _vertices);
 	~BVH();
 
 	void Create(std::vector<Triangle>* _tris);
@@ -53,8 +53,6 @@ public:
 
 	void FindSplitCost(Node* _node);
 
-	void SplitByTris();
-
 	int TrisMoreThan(int axis, float value);
 
 	int TrisMoreThan(Node* _node, int axis, float value);
@@ -63,11 +61,9 @@ public:
 
 	int TrisLessThan(int axis, float value);
 
-	void Search(const Ray& ray, std::vector<HitRecord>& hits);
+	void Search(const Ray& ray, std::vector<HitRecord>& hits, Image& img);
 
-	void Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node);
-
-	bool RayBoxIntersect(const Ray& r, const Bounds& _bb);
+	void Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Image& img);
 
 	void Destroy();
 
@@ -76,15 +72,12 @@ private:
 	void Build(Node* _node);
 
 	std::unique_ptr<Node> node;
-	std::vector<Object>* objects = nullptr;
 	std::vector<Triangle>* tris = nullptr;
 
 	std::vector<Vertex> vertices;
 
 	std::array<std::vector<float>, 3> axisSplits;
-	std::vector<SplitCost> costs;
 
-	Bounds bb;
 	float leafCost = 14.0f;
 };
 

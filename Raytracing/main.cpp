@@ -12,6 +12,7 @@ int main()
     Locator::InitMeshes(new MeshLoading());
     Locator::GetMeshes()->Load("cylinder");
     Locator::GetMeshes()->Load("cube");
+    Locator::GetMeshes()->Load("cube2");
     Locator::GetMeshes()->Load("iso");
 
     sf::Event event;

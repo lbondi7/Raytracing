@@ -17,6 +17,8 @@ struct Bounds
 
 	void operator=(const Bounds& bb);
 
+	bool RayBoxIntersect(const Ray& r);
+
 	Vec3 max = { 0.0f, 0.0f, 0.0f };
 	Vec3 min = { 0.0f, 0.0f, 0.0f };
 };

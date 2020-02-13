@@ -49,16 +49,9 @@ public:
 			(v1.axis[2] - v2.axis[2]) * (v1.axis[2] - v2.axis[2]));
 	}
 
-	static inline Vec3 Normalise(Vec3 v) { return v / v.Length(); }
-
 	void Normalise();
 
-	//float x = 0.0f;
-	//float y = 0.0f;
-	//float z = 0.0f;
-
 	std::array<float, 3> axis;
-
 };
 
 inline void Vec3::Normalise()

@@ -87,7 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Repositories\Raytracing\Raytracing\glm;C:\Repositories\tinyobjloader;C:\Repositories\SFML-2.5.1-32bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Repositories\stb;C:\Repositories\Raytracing\Raytracing\glm;C:\Repositories\tinyobjloader;C:\Repositories\SFML-2.5.1-32bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>SFML_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Repositories\SFML-2.5.1-32bit\include;C:\Repositories\tinyobjloader;C:\Repositories\Raytracing\Raytracing\glm</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Repositories\stb;C:\Repositories\SFML-2.5.1-32bit\include;C:\Repositories\tinyobjloader;C:\Repositories\Raytracing\Raytracing\glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -147,6 +147,7 @@
     <ClCompile Include="Bounds.cpp" />
     <ClCompile Include="BVH.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Image.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -155,7 +156,6 @@
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vec4.cpp" />
@@ -166,6 +166,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
     <ClInclude Include="HitRecord.h" />
+    <ClInclude Include="Image.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />
