@@ -8,9 +8,11 @@
 
 struct Triangle
 {
+	Triangle() = default;
 	Triangle(const Vec3& objCenter, const Vertex& v1, const Vertex& v2, const Vertex& v3);
 	Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3);
 	Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vec3& norm);
+	~Triangle();
 
 	float MinValue(int axis);
 
@@ -18,5 +20,6 @@ struct Triangle
 
 	std::array<Vertex, 3> vertices;
 	Vec3 normal;
+	std::array<float, 3> minPoints;
 };
 

@@ -13,6 +13,10 @@ Triangle::Triangle(const Vec3& objCenter, const Vertex& v1, const Vertex& v2, co
 		vertices[i].pos += objCenter;
 	}
 
+    for (size_t i = 0; i < 3; ++i)
+    {
+        minPoints[i] = std::min(std::min(vertices[0].pos.axis[i], vertices[1].pos.axis[i]), vertices[2].pos.axis[i]);
+    }
 	Vec3 u = v2.pos - v1.pos;
 	Vec3 v = v3.pos - v1.pos;
 
@@ -40,9 +44,15 @@ Triangle::Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const V
 	normal = norm;
 }
 
+Triangle::~Triangle()
+{
+    
+}
+
 float Triangle::MinValue(int axis)
 {
-	return std::min(std::min(vertices[0].pos.axis[axis], vertices[1].pos.axis[axis]), vertices[2].pos.axis[axis]);
+    return minPoints[axis];
+ //   return std::min(std::min(vertices[0].pos.axis[axis], vertices[1].pos.axis[axis]), vertices[2].pos.axis[axis]);
 }
 
 bool Triangle::Hit(

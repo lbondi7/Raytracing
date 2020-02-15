@@ -16,6 +16,8 @@ public:
 
 	void Colour(const Ray& ray, Vec3& colour);
 
+	void Colour(BVH& bvh, const Ray& ray, Vec3& colour);
+
 	void Init(sf::RenderWindow* _window);
 
 	void Update();

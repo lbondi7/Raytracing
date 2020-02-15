@@ -13,6 +13,8 @@ int main()
     Locator::GetMeshes()->Load("cylinder");
     Locator::GetMeshes()->Load("cube");
     Locator::GetMeshes()->Load("cube2");
+    Locator::GetMeshes()->Load("dog");
+    Locator::GetMeshes()->Load("dog2");
     Locator::GetMeshes()->Load("iso");
 
     sf::Event event;
