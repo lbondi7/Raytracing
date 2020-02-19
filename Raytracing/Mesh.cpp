@@ -35,7 +35,7 @@ void MeshLoading::Load(const std::string& mesh)
 		for (const auto& index : shape.mesh.indices) {
 			Vertex vertex = {};
 
-			vertex.pos = {
+			vertex.localPos = {
 				attrib.vertices[3 * index.vertex_index + 0],
 				attrib.vertices[3 * index.vertex_index + 1],
 				attrib.vertices[3 * index.vertex_index + 2]

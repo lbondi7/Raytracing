@@ -168,6 +168,7 @@
     <ClInclude Include="Constants.h" />
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="Image.h" />
+    <ClInclude Include="Light.h" />
     <ClInclude Include="Locator.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Mesh.h" />

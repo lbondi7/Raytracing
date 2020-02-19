@@ -13,6 +13,5 @@ struct Image
 
 
 	sf::Image image;
-
 };
 

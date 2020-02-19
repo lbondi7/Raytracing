@@ -79,12 +79,6 @@ void Scene::Init(sf::RenderWindow* _window)
     camera.SetLookAt(camera.GetPos() + Vec3(0, 0, 1));
     camera.SetViewMatrix();
 
-
-    //float valMax = Utilities::fPercentageFromMax(-2.5f, 2.5f, -2.5f);
-    //float valMin = Utilities::fPercentageFromMax(-2.5f, 2.5f, 0.63f);
-    //Utilities::Print(valMax);
-    //Utilities::Print(valMin);
-
     std::random_device rd;
     std::uniform_real_distribution<float> rand(-10.0f, 10.0f);
 
@@ -100,7 +94,8 @@ void Scene::Init(sf::RenderWindow* _window)
         //objects[i].Load("cube", Vec3(5.0f, 0.0f, 10.0f));
         //objects[i].Load("cube", Vec3(-3.0f, -3.0f, 7.0f));
         //objects[i].Load("cube", Vec3(3.0f, -3.0f, 7.0f));
-       objects[i].Load("dog2", Vec3(i, i, i + 4));
+       //objects[i].Load("cube", Vec3(i, i, i + 5));
+       objects[i].Load("dog2", Vec3(i, -3, i + 4));
         //objects[i].Load("dog2", Vec3(-2.0f, 1.0f, 4.0f));
         //objects[i].Load("dog2", Vec3(-3.0f, -2.0f, 5.0f));
         //objects[i].Load("dog2", Vec3(3.0f, -2.0f, 5.0f));

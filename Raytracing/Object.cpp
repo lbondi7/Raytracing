@@ -1,7 +1,7 @@
 #include "Object.h"
 #include "Locator.h"
 
-constexpr float kEpsilon = 1e-8;
+constexpr float kEPSILON = 1e-8;
 
 Object::Object(Vec3 _center)
 {
@@ -36,7 +36,7 @@ void Object::Load(const std::string& meshType, const Vec3& _center)
 
     for (size_t i = 0; i < mesh.indices.size(); i += 3)
     {
-        Triangle tri(center, mesh.vertices[mesh.indices[i]],
+        Triangle tri(&center, mesh.vertices[mesh.indices[i]],
             mesh.vertices[mesh.indices[i + 1]],
             mesh.vertices[mesh.indices[i + 2]]);
 
@@ -151,7 +151,7 @@ bool Object::HitTriangle(
 
     // check if ray and plane are parallel ?
     float NdotRayDirection = Vec3::Dot(N, ray.direction);
-    if (fabs(NdotRayDirection) < kEpsilon) // almost 0 
+    if (fabs(NdotRayDirection) < kEPSILON) // almost 0 
         return false; // they are parallel so they don't intersect ! 
 
     // compute d parameter using equation 2
@@ -208,7 +208,7 @@ bool Object::HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const V
 
     // check if ray and plane are parallel ?
     float NdotRayDirection = Vec3::Dot(N, ray.direction);
-    if (fabs(NdotRayDirection) < kEpsilon) // almost 0 
+    if (fabs(NdotRayDirection) < kEPSILON) // almost 0 
         return false; // they are parallel so they don't intersect ! 
 
     // compute d parameter using equation 2

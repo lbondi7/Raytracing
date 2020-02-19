@@ -8,7 +8,6 @@
 
 #include <memory>
 #include <thread>
-#include <future>
 
 struct SplitCost
 {
@@ -99,7 +98,13 @@ public:
 
 	void Search(const Ray& ray, std::vector<HitRecord>& hits, Image& img);
 
+	void Search(const Ray& ray, std::vector<HitRecord>& hits);
+
 	void Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Image& img);
+
+	void Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node);
+
+	bool Search(const Ray& ray, Node* _node);
 
 	void Destroy();
 
@@ -114,10 +119,6 @@ private:
 
 	std::array<std::vector<float>, 3> axisSplits;
 
-	std::vector<std::future<void>> futures;
-
-	float leafCost = 50.0f;
-
-	mutable std::mutex mtx;
+	float leafCost = 500.0f;
 };
 

@@ -1,5 +1,6 @@
 #include "BVH.h"
 #include "Utilities.h"
+#include "Constants.h"
 
 #include <algorithm>
 
@@ -132,17 +133,12 @@ static void BuildNode(Node* _node, float leafCost) {
 
 	/**************************************/
 
-
 	/*************Find Split Cost***************/
-
-	auto trisSize = _node->tris.size();
-	float costX = INFINITY, costY = INFINITY, costZ = INFINITY;
-	int splitNumX = 0, splitNumY = 0, splitNumZ = 0;
-	float traverseValue = 1.0f;
 
 	SplitCost splitCostX;
 	SplitCost splitCostY;
 	SplitCost splitCostZ;
+
 	std::thread axisX(GetCost, _node, place, 0, &splitCostX);
 	std::thread axisY(GetCost, _node, place, 1, &splitCostY);
 	std::thread axisZ(GetCost, _node, place, 2, &splitCostZ);
@@ -164,53 +160,50 @@ static void BuildNode(Node* _node, float leafCost) {
 		_node->leftNode = std::make_unique<Node>();
 		_node->rightNode = std::make_unique<Node>();
 
-		if (_node)
+		/*************Sort Tris on Axis***************/
+
+		switch (_node->splitCost.axis)
 		{
+		case 0:
+			std::sort(_node->tris.begin(), _node->tris.end(), sortTriX);
+			break;
+		case 1:
+			std::sort(_node->tris.begin(), _node->tris.end(), sortTriY);
+			break;
+		case 2:
+			std::sort(_node->tris.begin(), _node->tris.end(), sortTriZ);
+			break;
+		}
 
-			switch (_node->splitCost.axis)
+		/**************************************/
+
+		/*************Insert Tris into Left and Right Node***************/
+		
+		for (size_t i = 0; i < _node->tris.size(); ++i)
+		{
+			if (_node->tris.at(i).minPoints[_node->splitCost.axis] > _node->splitCost.splitPoint)
 			{
-			case 0:
-				std::sort(_node->tris.begin(), _node->tris.end(), sortTriX);
+				_node->leftNode->tris.insert(_node->leftNode->tris.begin(), _node->tris.begin(), _node->tris.begin() + i);
+				_node->rightNode->tris.insert(_node->rightNode->tris.begin(), _node->tris.begin() + (i + 1), _node->tris.end());
 				break;
-			case 1:
-				std::sort(_node->tris.begin(), _node->tris.end(), sortTriY);
-				break;
-			case 2:
-				std::sort(_node->tris.begin(), _node->tris.end(), sortTriZ);
-				break;
-			}
-
-			for (size_t i = 0; i < _node->tris.size(); ++i)
-			{
-				if (_node->tris.at(i).minPoints[_node->splitCost.axis] > _node->splitCost.splitPoint)
-				{
-					//std::cout << i << std::endl;
-					_node->leftNode->tris.insert(_node->leftNode->tris.begin(), _node->tris.begin(), _node->tris.begin() + i);
-					_node->rightNode->tris.insert(_node->rightNode->tris.begin(), _node->tris.begin() + (i + 1), _node->tris.end());
-					break;
-				}
-			}
-
-			if (!_node->leftNode->tris.empty())
-			{
-				BuildNode(_node->leftNode.get(), leafCost);
-			}
-			else
-			{
-				int x = 0;
-				_node->leftNode = nullptr;
-			}
-
-			if (!_node->rightNode->tris.empty())
-			{
-				BuildNode(_node->rightNode.get(), leafCost);
-			}
-			else
-			{
-				int x = 0;
-				_node->rightNode = nullptr;
 			}
 		}
+
+		/**************************************/
+
+		/*************Build Left/Right Nodes***************/
+
+		if (!_node->leftNode->tris.empty())
+			BuildNode(_node->leftNode.get(), leafCost);
+		else
+			_node->leftNode = nullptr;
+
+		if (!_node->rightNode->tris.empty())
+			BuildNode(_node->rightNode.get(), leafCost);
+		else
+			_node->rightNode = nullptr;
+
+		/**************************************/
 	}
 }
 
@@ -221,9 +214,7 @@ void BVH::Build()
 
 	//Build(node.get());
 
-	//BuildNode(node.get(), leafCost);
-	//std::lock_guard<std::mutex> lock(mtx);
-	std::thread(BuildNode, node.get(), leafCost).detach();
+	BuildNode(node.get(), leafCost);
 	
 }
 
@@ -387,6 +378,12 @@ void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Image& img)
 	Search(ray, hits, node.get(), img);
 }
 
+void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits)
+{
+	//std::thread(SearchBVH, ray, hits, node.get(), img).detach();
+	Search(ray, hits, node.get());
+}
+
 void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Image& img)
 {
 	if (_node->bb.RayBoxIntersect(ray))
@@ -395,18 +392,25 @@ void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Imag
 		{
 			for (size_t i = 0; i < _node->tris.size(); ++i)
 			{
-				float t, u, v, w;
+
+				float t, u, v;
 				if (_node->tris[i].Hit(ray, t, u, v))
 				{
 					HitRecord hit;
 					hit.t = t;
-					w = (1.0f - u - v);
+					hit.point = ray.origin + hit.t * ray.direction;
+					float w = (1.0f - u - v);
 
 					Vec2 texCo(_node->tris[i].vertices[0].texCoord * u + 
 						_node->tris[i].vertices[1].texCoord * v + 
 						_node->tris[i].vertices[2].texCoord * w);
 
-					hit.colour = Vec3(img.GetColour(texCo.axis[0], texCo.axis[1]));
+					Ray shadowRay(hit.point + (_node->tris[i].normal * kEPSILON), Normalise(Vec3(5, 0, 8) - hit.point));
+					if (Search(shadowRay, node.get()))
+						hit.colour = Vec3(0, 0, 0);
+					else
+						hit.colour = Vec3(img.GetColour(texCo.axis[0], texCo.axis[1]));
+
 					hits.emplace_back(hit);
 				}
 			}
@@ -420,6 +424,69 @@ void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Imag
 				Search(ray, hits, _node->rightNode.get(), img);
 		}
 	}
+}
+
+void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node)
+{
+	if (_node->bb.RayBoxIntersect(ray))
+	{
+		if (_node->isLeaf)
+		{
+			for (size_t i = 0; i < _node->tris.size(); ++i)
+			{
+
+				float t, u, v;
+				if (_node->tris[i].Hit(ray, t, u, v))
+				{
+					HitRecord hit;
+					hit.t = t;
+					hit.point = ray.origin + hit.t * ray.direction;
+					hit.colour = Vec3(0, 0, 0);
+					hits.emplace_back(hit);
+				}
+			}
+		}
+		else
+		{
+			if (_node->leftNode)
+				Search(ray, hits, _node->leftNode.get());
+
+			if (_node->rightNode)
+				Search(ray, hits, _node->rightNode.get());
+		}
+	}
+}
+
+bool BVH::Search(const Ray& ray, Node* _node)
+{
+	if (_node->bb.RayBoxIntersect(ray))
+	{
+		if (_node->isLeaf)
+		{
+			for (size_t i = 0; i < _node->tris.size(); ++i)
+			{
+				float t, u, v;
+				if (_node->tris[i].Hit(ray, t, u, v))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		else
+		{
+			if (_node->leftNode)
+				return Search(ray, _node->leftNode.get());
+
+			if (_node->rightNode)
+				return Search(ray, _node->rightNode.get());
+
+			if (!_node->leftNode && !_node->rightNode)
+				return false;
+		}
+		return false;
+	}
+	return false;
 }
 
 //void BVH::Destroy()
