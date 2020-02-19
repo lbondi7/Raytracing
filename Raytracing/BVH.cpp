@@ -82,13 +82,37 @@ static bool sortTriZ(const Triangle& tri1, const Triangle& tri2)
 	return tri1.minPoints[2] < tri2.minPoints[2];
 }
 
+static void GetCost(Node* _node, std::vector<int> place, int axis, SplitCost* _splitCost)
+{
+	float tmpCost = INFINITY;
+	for (size_t j = 0; j < _node->axisSplits.at(axis).size(); ++j)
+	{
+		auto leftSide = (Utilities::fPercentageFromMin(_node->bb.min.axis[axis], _node->bb.max.axis[axis], _node->axisSplits[axis][j]) *
+			place[j] * 1.0f);
+
+		auto rightSide = (Utilities::fPercentageFromMax(_node->bb.min.axis[axis], _node->bb.max.axis[axis], _node->axisSplits[axis][j]) *
+			(_node->tris.size() - place[j]) * 1.0f);
+
+		tmpCost = 0.1f + leftSide + rightSide;
+		if (tmpCost < _splitCost->cost)
+		{
+			_splitCost->cost = tmpCost;
+			_splitCost->splitPoint = _node->axisSplits[axis][j];
+			_splitCost->axis = axis;
+		}
+	}
+}
+
+static void SortAxis(Node* _node, int axis) {
+	std::sort(_node->axisSplits.at(axis).begin(), _node->axisSplits.at(axis).end());
+}
+
 static void BuildNode(Node* _node, float leafCost) {
 
 	_node->bb.Load(_node->tris);
 
 
 	/*************Find Splits***************/
-
 
 	std::vector<int> place;
 	int amount = int(std::ceil(_node->tris.size() / 8.0f));
@@ -112,35 +136,22 @@ static void BuildNode(Node* _node, float leafCost) {
 	/*************Find Split Cost***************/
 
 	auto trisSize = _node->tris.size();
-	float cost;
+	float costX = INFINITY, costY = INFINITY, costZ = INFINITY;
+	int splitNumX = 0, splitNumY = 0, splitNumZ = 0;
 	float traverseValue = 1.0f;
-	for (size_t i = 0; i < 3; ++i)
-	{
-		for (size_t j = 0; j < _node->axisSplits.at(i).size(); ++j)
-		{
 
-			//auto leftSide = (Utilities::fPercentageFromMin(_node->bb.min.axis[i], _node->bb.max.axis[i], _node->axisSplits.at(i)[j]) *
-			//	TrisLessThan(_node, i, _node->axisSplits.at(i)[j]) * traverseValue);
+	SplitCost splitCostX;
+	SplitCost splitCostY;
+	SplitCost splitCostZ;
+	std::thread axisX(GetCost, _node, place, 0, &splitCostX);
+	std::thread axisY(GetCost, _node, place, 1, &splitCostY);
+	std::thread axisZ(GetCost, _node, place, 2, &splitCostZ);
 
-			//auto rightSide = (Utilities::fPercentageFromMax(_node->bb.min.axis[i], _node->bb.max.axis[i], _node->axisSplits.at(i)[j]) *
-			//	TrisMoreThan(_node, i, _node->axisSplits.at(i)[j]) * traverseValue);
+	axisX.join();
+	axisY.join();
+	axisZ.join();
 
-			auto leftSide = (Utilities::fPercentageFromMin(_node->bb.min.axis[i], _node->bb.max.axis[i], _node->axisSplits.at(i)[j]) *
-				place[j] * traverseValue);
-
-			auto rightSide = (Utilities::fPercentageFromMax(_node->bb.min.axis[i], _node->bb.max.axis[i], _node->axisSplits.at(i)[j]) *
-				(trisSize - place[j]) * traverseValue);
-
-			cost = 0.1f + leftSide + rightSide;
-
-			if (cost < _node->splitCost.cost)
-			{
-				_node->splitCost.axis = i;
-				_node->splitCost.splitPoint = _node->axisSplits.at(i)[j];
-				_node->splitCost.cost = cost;
-			}
-		}
-	}
+	_node->splitCost.Compare(splitCostX, splitCostY, splitCostZ);
 
 	/**************************************/
 
@@ -169,45 +180,36 @@ static void BuildNode(Node* _node, float leafCost) {
 				break;
 			}
 
-			//auto it = _node->tris.begin();// +_node->splitCost.splitPointNum - 1;
-			//it += _node->tris.at(_node->splitCost.splitPointNum - 1);
-
 			for (size_t i = 0; i < _node->tris.size(); ++i)
 			{
 				if (_node->tris.at(i).minPoints[_node->splitCost.axis] > _node->splitCost.splitPoint)
 				{
-					_node->leftNode->tris.insert(_node->leftNode->tris.begin(), _node->tris.begin(), _node->tris.begin() + (i - 1));
-					_node->rightNode->tris.insert(_node->rightNode->tris.begin(), _node->tris.begin() + i, _node->tris.end());
+					//std::cout << i << std::endl;
+					_node->leftNode->tris.insert(_node->leftNode->tris.begin(), _node->tris.begin(), _node->tris.begin() + i);
+					_node->rightNode->tris.insert(_node->rightNode->tris.begin(), _node->tris.begin() + (i + 1), _node->tris.end());
 					break;
 				}
 			}
 
-			//for (size_t i = 0; i < _node->tris.size(); ++i)
-			//{
-			//	if (_node->tris.at(i).minPoints[_node->splitCost.axis] < _node->splitCost.splitPoint)
-			//	{
-			//		_node->leftNode->tris.emplace_back(_node->tris.at(i));
-			//	}
-			//	else
-			//	{
-			//		_node->rightNode->tris.emplace_back(_node->tris.at(i));
-			//	}
-			//}
-
 			if (!_node->leftNode->tris.empty())
 			{
-				std::thread(BuildNode, _node->leftNode.get(), leafCost).detach();
+				BuildNode(_node->leftNode.get(), leafCost);
 			}
 			else
+			{
+				int x = 0;
 				_node->leftNode = nullptr;
+			}
 
 			if (!_node->rightNode->tris.empty())
 			{
-				std::thread(BuildNode, _node->rightNode.get(), leafCost).detach();
-				//Build(_node->rightNode.get(), leafCost);
+				BuildNode(_node->rightNode.get(), leafCost);
 			}
 			else
+			{
+				int x = 0;
 				_node->rightNode = nullptr;
+			}
 		}
 	}
 }
@@ -217,9 +219,11 @@ void BVH::Build()
 	node = std::make_unique<Node>();
 	node->tris = *tris;
 
+	//Build(node.get());
+
 	//BuildNode(node.get(), leafCost);
 	//std::lock_guard<std::mutex> lock(mtx);
-	std::thread(BuildNode, node.get(), leafCost).join();
+	std::thread(BuildNode, node.get(), leafCost).detach();
 	
 }
 
@@ -240,7 +244,7 @@ void BVH::Build(Node* _node) {
 
 		for (size_t i = 0; i < _node->tris.size(); ++i)
 		{
-			if (_node->tris.at(i).MinValue(_node->splitCost.axis) < _node->splitCost.splitPoint)
+			if (_node->tris.at(i).minPoints[_node->splitCost.axis] < _node->splitCost.splitPoint)
 			{
 				_node->leftNode->tris.emplace_back(_node->tris.at(i));
 			}
@@ -268,20 +272,20 @@ void BVH::SplitAndSortAxis(Node* _node)
 	std::vector<float> yAxis;
 	std::vector<float> zAxis;
 
-	for (size_t i = 0; i < _node->tris.size(); i += 3)
+	for (size_t i = 0; i < _node->tris.size(); i += 20)
 	{
-		xAxis.emplace_back(_node->tris.at(i).MinValue(0));
-		yAxis.emplace_back(_node->tris.at(i).MinValue(1));
-		zAxis.emplace_back(_node->tris.at(i).MinValue(2));
+		xAxis.emplace_back(_node->tris.at(i).minPoints[0]);
+		yAxis.emplace_back(_node->tris.at(i).minPoints[1]);
+		zAxis.emplace_back(_node->tris.at(i).minPoints[2]);
 	}
 
 	std::sort(xAxis.begin(), xAxis.end());
 	std::sort(yAxis.begin(), yAxis.end());
 	std::sort(zAxis.begin(), zAxis.end());
 
-	//_node->axisSplits.at(0) = xAxis;
-	//_node->axisSplits.at(1) = yAxis;
-	//_node->axisSplits.at(2) = zAxis;
+	_node->axisSplits.at(0) = xAxis;
+	_node->axisSplits.at(1) = yAxis;
+	_node->axisSplits.at(2) = zAxis;
 }
 
 void BVH::FindSplitCost(Node* _node)
@@ -291,23 +295,23 @@ void BVH::FindSplitCost(Node* _node)
 	{
 		for (size_t j = 0; j < _node->axisSplits.at(i).size(); ++j)
 		{
-			//auto splitVal = _node->axisSplits.at(i)[j];
-			//auto pertMin = Utilities::fPercentageFromMin(_node->bb.min.axis[i], _node->bb.max.axis[i], splitVal);
-			//auto leftSide = (pertMin *
-			//	TrisLessThan(_node, i, splitVal) * 2.0f);
+			auto splitVal = _node->axisSplits.at(i)[j];
+			auto pertMin = Utilities::fPercentageFromMin(_node->bb.min.axis[i], _node->bb.max.axis[i], splitVal);
+			auto leftSide = (pertMin *
+				TrisLessThan(_node, i, splitVal) * 2.0f);
 
-			//auto pertMax = Utilities::fPercentageFromMax(_node->bb.min.axis[i], _node->bb.max.axis[i], splitVal);
-			//auto rightSide = (pertMax *
-			//	TrisMoreThan(_node, i, splitVal) * 2.0f);
+			auto pertMax = Utilities::fPercentageFromMax(_node->bb.min.axis[i], _node->bb.max.axis[i], splitVal);
+			auto rightSide = (pertMax *
+				TrisMoreThan(_node, i, splitVal) * 2.0f);
 
-			//cost = 1.0f + leftSide + rightSide;
+			cost = 1.0f + leftSide + rightSide;
 
-			//if (cost < _node->splitCost.cost)
-			//{
-			//	_node->splitCost.axis = i;
-			//	_node->splitCost.splitPoint = _node->axisSplits.at(i)[j];
-			//	_node->splitCost.cost = cost;
-			//}
+			if (cost < _node->splitCost.cost)
+			{
+				_node->splitCost.axis = i;
+				_node->splitCost.splitPoint = _node->axisSplits.at(i)[j];
+				_node->splitCost.cost = cost;
+			}
 		}
 	}
 }
@@ -317,7 +321,7 @@ int BVH::TrisMoreThan(Node* _node, int axis, float value)
 	int trisNum = 0;
 	for (size_t i = 0; i < _node->tris.size(); ++i)
 	{
-		if (_node->tris.at(i).MinValue(axis) >= value)
+		if (_node->tris.at(i).minPoints[axis] >= value)
 		{
 			++trisNum;
 		}
@@ -331,7 +335,7 @@ int BVH::TrisLessThan(Node* _node, int axis, float value)
 	int trisNum = 0;
 	for (size_t i = 0; i < _node->tris.size(); ++i)
 	{
-		if (_node->tris.at(i).MinValue(axis) < value)
+		if (_node->tris.at(i).minPoints[axis] < value)
 		{
 			++trisNum;
 		}

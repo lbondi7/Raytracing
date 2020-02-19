@@ -38,7 +38,7 @@ private:
 	float xish = 0.0f;
 
 	std::vector<Object> objects;
-	int objCount = 1;
+	int objCount = 3;
 
 	Image img;
 

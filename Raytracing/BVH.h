@@ -15,6 +15,46 @@ struct SplitCost
 	int axis = 0;
 	float splitPoint = 0.0f;
 	float cost = INFINITY;
+
+
+	void operator =(const SplitCost& other)
+	{
+		cost = other.cost;
+		axis = other.axis;
+		splitPoint = other.splitPoint;
+	}
+
+	void Compare(const SplitCost& splitCostX, const SplitCost& splitCostY, const SplitCost& splitCostZ)
+	{
+
+		if (splitCostX.cost < splitCostY.cost)
+		{
+			if (splitCostX.cost < splitCostZ.cost)
+			{
+				axis = splitCostX.axis;
+				splitPoint = splitCostX.splitPoint;
+				cost = splitCostX.cost;
+			}
+			else if (splitCostX.cost > splitCostZ.cost)
+			{
+				axis = splitCostZ.axis;
+				splitPoint = splitCostZ.splitPoint;
+				cost = splitCostZ.cost;
+			}
+		}
+		else if (splitCostY.cost < splitCostZ.cost)
+		{
+			axis = splitCostY.axis;
+			splitPoint = splitCostY.splitPoint;
+			cost = splitCostY.cost;
+		}
+		else
+		{
+			axis = splitCostZ.axis;
+			splitPoint = splitCostZ.splitPoint;
+			cost = splitCostZ.cost;
+		}
+	}
 };
 
 struct Node {

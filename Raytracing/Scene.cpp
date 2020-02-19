@@ -95,12 +95,12 @@ void Scene::Init(sf::RenderWindow* _window)
         //if(i % 1 && i != 0)
         //    objects[i].Load("iso", Vec3(rand(rd), rand(rd), i * 5));
         //else
-        //objects[i].Load("cube", Vec3(2.0f, 2.0f, 4));
+        //objects[i].Load("cube2", Vec3(i, i, i + 4));
         //objects[i].Load("cube", Vec3(0.0f, 2.0f, 5.0f));
         //objects[i].Load("cube", Vec3(5.0f, 0.0f, 10.0f));
         //objects[i].Load("cube", Vec3(-3.0f, -3.0f, 7.0f));
         //objects[i].Load("cube", Vec3(3.0f, -3.0f, 7.0f));
-        objects[i].Load("dog2", Vec3(2.0f, 1.0f, 4.0f));
+       objects[i].Load("dog2", Vec3(i, i, i + 4));
         //objects[i].Load("dog2", Vec3(-2.0f, 1.0f, 4.0f));
         //objects[i].Load("dog2", Vec3(-3.0f, -2.0f, 5.0f));
         //objects[i].Load("dog2", Vec3(3.0f, -2.0f, 5.0f));
@@ -111,13 +111,14 @@ void Scene::Init(sf::RenderWindow* _window)
 
     for (size_t i = 0; i < objects.size(); ++i)
     {
-        for (size_t j = 0; j < objects[i].tris.size(); ++j)
-        {
-            tris.push_back(objects[i].tris[j]);
-        }
+        tris.insert(tris.end(), objects[i].tris.begin(), objects[i].tris.end());
+        //for (size_t j = 0; j < objects[i].tris.size(); ++j)
+        //{
+        //    tris.push_back(objects[i].tris[j]);
+        //}
     }
 
-    img.Load("textures/mrBeanCube.jpg");
+    img.Load("textures/perf.jpg");
 
     bvh.Create(&tris);
     bvh.Build();
