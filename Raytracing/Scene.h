@@ -35,15 +35,14 @@ private:
 	sf::Image image;
 	sf::Texture texture;
 
-	float xish = 0.0f;
-
 	std::vector<Object> objects;
-	int objCount = 1;
+	int objCount = 2;
 
 	Image img;
 
 	Camera camera;
 	BVH bvh;
 	std::vector<Triangle> tris;
+	Object light;
 };
 

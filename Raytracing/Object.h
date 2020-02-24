@@ -28,6 +28,8 @@ public:
 
 	bool HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2, float& t, float& u, float& v, HitRecord& rec);
 
+	void SetCenter(Vec3 _center);
+
 	Mesh mesh;
 
 	std::vector<Triangle> tris;
@@ -35,5 +37,9 @@ public:
 	Vec3 center = { 0.0f, 0.0f, 0.0f };
 
 	Bounds boundingBox;
+
+	bool isLight = false;
+
+
 };
 

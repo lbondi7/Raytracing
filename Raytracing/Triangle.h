@@ -20,6 +20,8 @@ struct Triangle
 
 	bool Hit(const Ray& ray, float& t, float& u, float& v);
 
+	void Update();
+
 	std::array<Vertex, 3> vertices;
 	Vec3 normal;
 	std::array<float, 3> minPoints;
@@ -27,5 +29,6 @@ struct Triangle
 
 	Vec3* objectCenter = nullptr;
 	Image* image = nullptr;
+	bool isLight = false;
 };
 

@@ -4,6 +4,8 @@
 
 #include <algorithm>
 
+int fff = 0;
+
 BVH::BVH(std::vector<Triangle>* _tris)
 {
 	tris = _tris;
@@ -112,11 +114,10 @@ static void BuildNode(Node* _node, float leafCost) {
 
 	_node->bb.Load(_node->tris);
 
-
 	/*************Find Splits***************/
 
 	std::vector<int> place;
-	int amount = int(std::ceil(_node->tris.size() / 8.0f));
+	//int amount = int(std::ceil(_node->tris.size() / 8.0f));
 
 	for (size_t i = 0; i < _node->tris.size(); i += 20)
 	{
@@ -130,8 +131,7 @@ static void BuildNode(Node* _node, float leafCost) {
 	std::sort(_node->axisSplits.at(1).begin(), _node->axisSplits.at(1).end());
 	std::sort(_node->axisSplits.at(2).begin(), _node->axisSplits.at(2).end());
 
-
-	/**************************************/
+	/***************************************/
 
 	/*************Find Split Cost***************/
 
@@ -149,7 +149,7 @@ static void BuildNode(Node* _node, float leafCost) {
 
 	_node->splitCost.Compare(splitCostX, splitCostY, splitCostZ);
 
-	/**************************************/
+	/*******************************************/
 
 	if (_node->splitCost.cost < leafCost)
 	{
@@ -175,7 +175,7 @@ static void BuildNode(Node* _node, float leafCost) {
 			break;
 		}
 
-		/**************************************/
+		/*********************************************/
 
 		/*************Insert Tris into Left and Right Node***************/
 		
@@ -189,7 +189,7 @@ static void BuildNode(Node* _node, float leafCost) {
 			}
 		}
 
-		/**************************************/
+		/****************************************************************/
 
 		/*************Build Left/Right Nodes***************/
 
@@ -203,7 +203,7 @@ static void BuildNode(Node* _node, float leafCost) {
 		else
 			_node->rightNode = nullptr;
 
-		/**************************************/
+		/**************************************************/
 	}
 }
 
@@ -215,7 +215,6 @@ void BVH::Build()
 	//Build(node.get());
 
 	BuildNode(node.get(), leafCost);
-	
 }
 
 void BVH::Build(Node* _node) {
@@ -392,7 +391,6 @@ void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Imag
 		{
 			for (size_t i = 0; i < _node->tris.size(); ++i)
 			{
-
 				float t, u, v;
 				if (_node->tris[i].Hit(ray, t, u, v))
 				{
@@ -405,9 +403,10 @@ void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Imag
 						_node->tris[i].vertices[1].texCoord * v + 
 						_node->tris[i].vertices[2].texCoord * w);
 
-					Ray shadowRay(hit.point + (_node->tris[i].normal * kEPSILON), Normalise(Vec3(5, 0, 8) - hit.point));
+					Ray shadowRay(hit.point + (_node->tris[i].normal * kEPSILON), Normalise(Vec3(-2, 0, 2) - hit.point));
+
 					if (Search(shadowRay, node.get()))
-						hit.colour = Vec3(0, 0, 0);
+						hit.colour = Vec3(0, 1, 0);
 					else
 						hit.colour = Vec3(img.GetColour(texCo.axis[0], texCo.axis[1]));
 
@@ -471,7 +470,6 @@ bool BVH::Search(const Ray& ray, Node* _node)
 					return true;
 				}
 			}
-			return false;
 		}
 		else
 		{
@@ -480,11 +478,7 @@ bool BVH::Search(const Ray& ray, Node* _node)
 
 			if (_node->rightNode)
 				return Search(ray, _node->rightNode.get());
-
-			if (!_node->leftNode && !_node->rightNode)
-				return false;
 		}
-		return false;
 	}
 	return false;
 }

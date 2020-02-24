@@ -253,3 +253,13 @@ bool Object::HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const V
 
     return true; // this ray hits the triangle 
 }
+
+void Object::SetCenter(Vec3 _center)
+{
+    center = _center;
+
+    for (size_t i = 0; i < tris.size(); i++)
+    {
+        tris[i].Update();
+    }
+}

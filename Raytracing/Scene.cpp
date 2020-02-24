@@ -86,31 +86,26 @@ void Scene::Init(sf::RenderWindow* _window)
 
     for (size_t i = 0; i < objCount; ++i)
     {
-        //if(i % 1 && i != 0)
-        //    objects[i].Load("iso", Vec3(rand(rd), rand(rd), i * 5));
-        //else
-        //objects[i].Load("cube2", Vec3(i, i, i + 4));
-        //objects[i].Load("cube", Vec3(0.0f, 2.0f, 5.0f));
-        //objects[i].Load("cube", Vec3(5.0f, 0.0f, 10.0f));
-        //objects[i].Load("cube", Vec3(-3.0f, -3.0f, 7.0f));
-        //objects[i].Load("cube", Vec3(3.0f, -3.0f, 7.0f));
-       //objects[i].Load("cube", Vec3(i, i, i + 5));
-       objects[i].Load("dog2", Vec3(i, -3, i + 4));
-        //objects[i].Load("dog2", Vec3(-2.0f, 1.0f, 4.0f));
-        //objects[i].Load("dog2", Vec3(-3.0f, -2.0f, 5.0f));
-        //objects[i].Load("dog2", Vec3(3.0f, -2.0f, 5.0f));
-        //objects[i].Load("dog2", Vec3(-2.0f, 0.0f, 8.0f));
-        //objects[i].Load("dog2", Vec3(2.0f, 0.0f, 8.0f));
-       // objects[i].Load("cube", Vec3(5.0f, 4.0f, 9.0f));
+       //objects[i].Load("cube2", Vec3(i, i, i + 4));
+       objects[i].Load("cube", Vec3(i * 3, 0, 4));
+       //objects[i].Load("dog2", Vec3(i, -3, i + 4));
     }
+
+    light.Load("cube", Vec3());
+    light.isLight = true;
+    light.SetCenter(Vec3(0, 0, 0));
+    //objects.emplace_back(light);
 
     for (size_t i = 0; i < objects.size(); ++i)
     {
+        if (objects[i].isLight)
+        {
+            for (size_t j = 0; j < objects[i].tris.size(); ++j)
+            {
+                objects[i].tris[j].isLight = true;
+            }
+        }
         tris.insert(tris.end(), objects[i].tris.begin(), objects[i].tris.end());
-        //for (size_t j = 0; j < objects[i].tris.size(); ++j)
-        //{
-        //    tris.push_back(objects[i].tris[j]);
-        //}
     }
 
     img.Load("textures/perf.jpg");
@@ -123,7 +118,7 @@ void Scene::Init(sf::RenderWindow* _window)
     Vec3 vertical(0.0f, -2.0f, 0.0f);
     Vec3 origin(0.0f, 0.0f, 0.0f);
     int ir, ig, ib;
-    for (int j = HEIGHT - 1; j >= 0; --j)
+    for (int j = 0; j < HEIGHT; ++j)
     {
         for (int i = 0; i < WIDTH; ++i)
         {
@@ -155,7 +150,7 @@ void Scene::Update()
     int ir = 0;
     int ig = 0;
     int ib = 0;
-    for (int j = HEIGHT - 1; j >= 0; --j)
+    for (int j = 0; j < HEIGHT; ++j)
     {
         for (int i = 0; i < WIDTH; ++i)
         {

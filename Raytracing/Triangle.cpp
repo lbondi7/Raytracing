@@ -92,7 +92,7 @@ bool Triangle::Hit(
     // no need to normalize
     float denom = Vec3::Dot(normal, normal);
 
-    float area2 = normal.Length();
+   // float area2 = normal.Length();
 
     // Step 1: finding P
 
@@ -130,4 +130,28 @@ bool Triangle::Hit(
     v /= denom;
 
     return true; // this ray hits the triangle 
+}
+
+void Triangle::Update()
+{
+    for (size_t i = 0; i < 3; ++i)
+    {
+        //vertPosWorld[i] = vertices[i].pos + *objectCenter;
+        vertices[i].pos = vertices[i].localPos + *objectCenter;
+    }
+
+    for (size_t i = 0; i < 3; ++i)
+    {
+        //minPoints[i] = std::min(std::min(vertPosWorld[0].axis[i], vertPosWorld[1].axis[i]), vertPosWorld[2].axis[i]);
+        minPoints[i] = std::min(std::min(vertices[0].pos.axis[i], vertices[1].pos.axis[i]), vertices[2].pos.axis[i]);
+    }
+
+    edges[0] = vertices[1].pos - vertices[0].pos;
+    edges[1] = vertices[2].pos - vertices[1].pos;
+    edges[2] = vertices[0].pos - vertices[2].pos;
+
+    Vec3 u = vertices[1].pos - vertices[0].pos;
+    Vec3 v = vertices[2].pos - vertices[0].pos;
+
+    normal = Vec3::Cross(u, v);
 }
