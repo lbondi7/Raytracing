@@ -4,6 +4,7 @@
 #include "Bounds.h"
 #include "Triangle.h"
 #include "HitRecord.h"
+#include "Matrix.h"
 
 class Object
 {
@@ -30,6 +31,8 @@ public:
 
 	void SetCenter(Vec3 _center);
 
+	void Update();
+
 	Mesh mesh;
 
 	std::vector<Triangle> tris;
@@ -40,6 +43,6 @@ public:
 
 	bool isLight = false;
 
-
+	Matrix objectMatrix;
 };
 

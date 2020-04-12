@@ -1,5 +1,7 @@
 #pragma once
 #include "Vec3.h"
+#include "Vec4.h"
+#include "Matrix.h"
 
 #include <iostream>
 
@@ -14,6 +16,10 @@ struct Utilities
 	static float fPercentageFromMax(float min, float max, float point) { return ((max - point) / (max - min)); }
 
 	static float fPercentageFromMin(float min, float max, float point) { return 1.0f - ((max - point) / (max - min)); }
+
+	static void Translate(const Matrix& m, Vec3& v);
+
+	static void Translate(const Matrix& m, Vec4& v);
 
 
 };

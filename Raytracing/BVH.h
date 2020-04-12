@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Object.h"
 #include "Bounds.h"
 #include "Ray.h"
 #include "HitRecord.h"
@@ -86,6 +85,8 @@ public:
 
 	void Create(std::vector<Triangle>* _tris);
 
+	void BuildNode(Node* _node);
+
 	void Build();
 
 	void SplitAndSortAxis(Node* _node);
@@ -110,6 +111,8 @@ public:
 
 private:
 	
+	bool objectBVH = false;
+
 	void Build(Node* _node);
 
 	std::unique_ptr<Node> node;

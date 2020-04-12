@@ -1,21 +1,29 @@
 #pragma once
-
 #include "PoolableThread.h"
 
 #include <vector>
+#include <functional>
+#include <optional>
 
 class ThreadManager
 {
+public:
+
 	ThreadManager() = default;
-	ThreadManager(int number);
+	ThreadManager(int numOfThreads);
+	~ThreadManager();
 
+	void Init(int numOfThreads);
 
-	void StartWork() { return; }
+	std::function<void()>& SetTask(bool _perminate = false);
+
+	int ThreadCount() { static_cast<int>(threads.size()); }
+
+	bool IsExecutingTask();
+
 
 private:
 
-	std::vector<PoolableThread> threads;
-
+	std::vector<std::unique_ptr<PoolableThread>> threads;
 
 };
-

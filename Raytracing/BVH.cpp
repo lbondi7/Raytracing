@@ -1,6 +1,8 @@
 #include "BVH.h"
 #include "Utilities.h"
 #include "Constants.h"
+#include "Locator.h"
+#include "ThreadManager.h"
 
 #include <algorithm>
 
@@ -22,8 +24,18 @@ void BVH::Create(std::vector<Triangle>* _tris)
 {
 	tris = _tris;
 
+	objectBVH = true;
+
 	//bb.Load(*tris);
 }
+
+//void BVH::Create(std::vector<Object>* _objs)
+//{
+//	objects = _objs;
+//
+//	objectBVH = false;
+//	//bb.Load(*tris);
+//}
 
 static int TrisMoreThan(Node* _node, int axis, float value)
 {
@@ -207,6 +219,103 @@ static void BuildNode(Node* _node, float leafCost) {
 	}
 }
 
+void BVH::BuildNode(Node* _node) {
+
+	_node->bb.Load(_node->tris);
+
+	/*************Find Splits***************/
+
+	std::vector<int> place;
+	//int amount = int(std::ceil(_node->tris.size() / 8.0f));
+
+	for (size_t i = 0; i < _node->tris.size(); i += 20)
+	{
+		_node->axisSplits.at(0).emplace_back(_node->tris.at(i).minPoints[0]);
+		_node->axisSplits.at(1).emplace_back(_node->tris.at(i).minPoints[1]);
+		_node->axisSplits.at(2).emplace_back(_node->tris.at(i).minPoints[2]);
+		place.emplace_back(i);
+	}
+
+	std::sort(_node->axisSplits.at(0).begin(), _node->axisSplits.at(0).end());
+	std::sort(_node->axisSplits.at(1).begin(), _node->axisSplits.at(1).end());
+	std::sort(_node->axisSplits.at(2).begin(), _node->axisSplits.at(2).end());
+
+	/***************************************/
+
+	/*************Find Split Cost***************/
+
+	SplitCost splitCostX;
+	SplitCost splitCostY;
+	SplitCost splitCostZ;
+
+	std::thread axisX(GetCost, _node, place, 0, &splitCostX);
+	std::thread axisY(GetCost, _node, place, 1, &splitCostY);
+	std::thread axisZ(GetCost, _node, place, 2, &splitCostZ);
+
+	axisX.join();
+	axisY.join();
+	axisZ.join();
+
+	_node->splitCost.Compare(splitCostX, splitCostY, splitCostZ);
+
+	/*******************************************/
+
+	if (_node->splitCost.cost < leafCost)
+	{
+		_node->isLeaf = true;
+	}
+	else
+	{
+		_node->leftNode = std::make_unique<Node>();
+		_node->rightNode = std::make_unique<Node>();
+
+		/*************Sort Tris on Axis***************/
+
+		switch (_node->splitCost.axis)
+		{
+		case 0:
+			std::sort(_node->tris.begin(), _node->tris.end(), sortTriX);
+			break;
+		case 1:
+			std::sort(_node->tris.begin(), _node->tris.end(), sortTriY);
+			break;
+		case 2:
+			std::sort(_node->tris.begin(), _node->tris.end(), sortTriZ);
+			break;
+		}
+
+		/*********************************************/
+
+		/*************Insert Tris into Left and Right Node***************/
+
+		for (size_t i = 0; i < _node->tris.size(); ++i)
+		{
+			if (_node->tris.at(i).minPoints[_node->splitCost.axis] > _node->splitCost.splitPoint)
+			{
+				_node->leftNode->tris.insert(_node->leftNode->tris.begin(), _node->tris.begin(), _node->tris.begin() + i);
+				_node->rightNode->tris.insert(_node->rightNode->tris.begin(), _node->tris.begin() + (i + 1), _node->tris.end());
+				break;
+			}
+		}
+
+		/****************************************************************/
+
+		/*************Build Left/Right Nodes***************/
+
+		if (!_node->leftNode->tris.empty())
+			BuildNode(_node->leftNode.get());
+		else
+			_node->leftNode = nullptr;
+
+		if (!_node->rightNode->tris.empty())
+			BuildNode(_node->rightNode.get());
+		else
+			_node->rightNode = nullptr;
+
+		/**************************************************/
+	}
+}
+
 void BVH::Build()
 {
 	node = std::make_unique<Node>();
@@ -214,7 +323,7 @@ void BVH::Build()
 
 	//Build(node.get());
 
-	BuildNode(node.get(), leafCost);
+	BuildNode(node.get());
 }
 
 void BVH::Build(Node* _node) {
@@ -333,43 +442,6 @@ int BVH::TrisLessThan(Node* _node, int axis, float value)
 
 	return trisNum;
 }
-
-static void SearchBVH(Ray ray, std::vector<HitRecord>* hits, Node* _node, Image img)
-{
-	if (_node->bb.RayBoxIntersect(ray))
-	{
-		if (_node->isLeaf)
-		{
-			for (size_t i = 0; i < _node->tris.size(); ++i)
-			{
-				float t, u, v, w;
-				if (_node->tris[i].Hit(ray, t, u, v))
-				{
-					HitRecord hit;
-					hit.t = t;
-					w = (1.0f - u - v);
-
-					Vec2 texCo(_node->tris[i].vertices[0].texCoord * u +
-						_node->tris[i].vertices[1].texCoord * v +
-						_node->tris[i].vertices[2].texCoord * w);
-
-					hit.colour = Vec3(img.GetColour(texCo.axis[0], texCo.axis[1]));
-					(*hits).emplace_back(hit);
-				}
-			}
-		}
-		else
-		{
-			if (_node->leftNode)
-				std::thread(SearchBVH, ray, hits, _node->leftNode.get(), img).detach();
-
-			if (_node->rightNode)
-				std::thread(SearchBVH, ray, hits, _node->rightNode.get(), img).detach();
-
-		}
-	}
-}
-
 
 void BVH::Search(const Ray& ray, std::vector<HitRecord>& hits, Image& img)
 {

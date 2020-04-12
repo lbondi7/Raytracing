@@ -61,38 +61,38 @@ void Bounds::operator=(const Bounds& bb)
 
 bool Bounds::RayBoxIntersect(const Ray& r)
 {
-	float tmin = (min.x() - r.origin.x()) / r.direction.x();
-	float tmax = (max.x() - r.origin.x()) / r.direction.x();
+	float txmin = (min.x() - r.origin.x()) / r.direction.x();
+	float txmax = (max.x() - r.origin.x()) / r.direction.x();
 
-	if (tmin > tmax) std::swap(tmin, tmax);
+	if (txmin > txmax) std::swap(txmin, txmax);
 
 	float tymin = (min.y() - r.origin.y()) / r.direction.y();
 	float tymax = (max.y() - r.origin.y()) / r.direction.y();
 
 	if (tymin > tymax) std::swap(tymin, tymax);
 
-	if ((tmin > tymax) || (tymin > tmax))
+	if ((txmin > tymax) || (tymin > txmax))
 		return false;
 
-	if (tymin > tmin)
-		tmin = tymin;
+	if (tymin > txmin)
+		txmin = tymin;
 
-	if (tymax < tmax)
-		tmax = tymax;
+	if (tymax < txmax)
+		txmax = tymax;
 
 	float tzmin = (min.z() - r.origin.z()) / r.direction.z();
 	float tzmax = (max.z() - r.origin.z()) / r.direction.z();
 
 	if (tzmin > tzmax) std::swap(tzmin, tzmax);
 
-	if ((tmin > tzmax) || (tzmin > tmax))
+	if ((txmin > tzmax) || (tzmin > txmax))
 		return false;
 
-	if (tzmin > tmin)
-		tmin = tzmin;
+	if (tzmin > txmin)
+		txmin = tzmin;
 
-	if (tzmax < tmax)
-		tmax = tzmax;
+	if (tzmax < txmax)
+		txmax = tzmax;
 
 	return true;
 }

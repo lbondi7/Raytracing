@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Locator.h"
+#include "ThreadManager.h"
 #include "Constants.h"
 
 int main()
@@ -16,6 +17,9 @@ int main()
     Locator::GetMeshes()->Load("dog");
     Locator::GetMeshes()->Load("dog2");
     Locator::GetMeshes()->Load("iso");
+    Locator::GetMeshes()->Load("triangle");
+
+    Locator::InitTM(new ThreadManager(6));
 
     sf::Event event;
 

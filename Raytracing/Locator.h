@@ -1,6 +1,7 @@
 #pragma once
 
 struct MeshLoading;
+class ThreadManager;
 
 struct Locator
 {
@@ -8,11 +9,14 @@ struct Locator
 
 	static MeshLoading* GetMeshes() { return meshes; }
 
+	static void InitTM(ThreadManager* _tm) { tm = _tm; }
 
+	static ThreadManager* GetTM() { return tm; }
 
 private:
 
 	static MeshLoading* meshes;
 
+	static ThreadManager* tm;
 };
 

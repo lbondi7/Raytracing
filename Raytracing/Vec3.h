@@ -1,8 +1,9 @@
 #pragma once
-#include "Vec4.h"
 
 #include <math.h>
 #include <array>
+
+class Vec4;
 
 class Vec3
 {
@@ -11,7 +12,6 @@ public:
 	Vec3() = default;
 	Vec3(float x, float y, float z);
 	Vec3(const Vec3& vec);
-	Vec3(const Vec4& vec);
 
 	float x() const { return axis[0]; }
 	float y() const { return axis[1]; }
@@ -56,7 +56,7 @@ public:
 
 inline void Vec3::Normalise()
 {
-	float k = 1.0 / Length();
+	float k = 1.0f / Length();
 	axis[0] *= k;
 	axis[1] *= k; 
 	axis[2] *= k;

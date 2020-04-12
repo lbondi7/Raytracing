@@ -16,6 +16,24 @@ Vec4::Vec4(const Vec4& vec)
 	axis[3] = vec.axis[3];
 }
 
+Vec4::Vec4(const Vec3& vec)
+{
+	axis[0] = vec.x();
+	axis[1] = vec.y();
+	axis[2] = vec.z();
+	axis[3] = 1.0f;
+}
+
+Vec4 Vec4::TranslationVector(const Vec3& vec)
+{
+	return Vec4(vec.x(), vec.y(), vec.z(), 1.0f);
+}
+
+Vec4 Vec4::RotationVector(const Vec3& vec)
+{
+	return Vec4(vec.x(), vec.y(), vec.z(), 0.0f);
+}
+
 void Vec4::operator=(const Vec4& vec)
 {
 	axis[0] = vec.axis[0];

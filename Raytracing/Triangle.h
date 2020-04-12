@@ -14,6 +14,7 @@ struct Triangle
 	Triangle(Vec3* objCenter, const Vertex& v1, const Vertex& v2, const Vertex& v3);
 	Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3);
 	Triangle(const Vertex& v1, const Vertex& v2, const Vertex& v3, const Vec3& norm);
+
 	~Triangle();
 
 	float MinValue(int axis);

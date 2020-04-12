@@ -58,9 +58,19 @@ Vec3 Object::HitObject(
             center + mesh.vertices[mesh.indices[i + 2]].pos, t, u, v))
         {
             w = (1 - u - v);
-            return (Vec3(mesh.vertices[mesh.indices[i]].colour) * u) + 
-            (Vec3(mesh.vertices[mesh.indices[i + 1]].colour) * v) + 
-            (Vec3(mesh.vertices[mesh.indices[i + 2]].colour) * w) ;
+
+            Vec3 col1, col2, col3;
+            for (size_t j = 0; j < 3; j++)
+            {
+                col1.axis[j] = mesh.vertices[mesh.indices[i]].colour.axis[j];
+                col2.axis[j] = mesh.vertices[mesh.indices[i + 1]].colour.axis[j];
+                col3.axis[j] = mesh.vertices[mesh.indices[i + 2]].colour.axis[j];
+            }
+
+
+            return (col1 * u) + 
+            (col2 * v) + 
+            (col3 * w) ;
         }
     }
 
@@ -78,9 +88,18 @@ bool Object::Hit(const Ray& ray, Vec3& colour)
             center + mesh.vertices[mesh.indices[i + 2]].pos, t, u, v))
         {
             w = (1 - u - v);
-            colour = (Vec3(mesh.vertices[mesh.indices[i]].colour) * u) + 
-            (Vec3(mesh.vertices[mesh.indices[i + 1]].colour) * v) + 
-            (Vec3(mesh.vertices[mesh.indices[i + 2]].colour) * w) ;
+            Vec3 col1, col2, col3;
+            for (size_t j = 0; j < 3; j++)
+            {
+                col1.axis[j] = mesh.vertices[mesh.indices[i]].colour.axis[j];
+                col2.axis[j] = mesh.vertices[mesh.indices[i + 1]].colour.axis[j];
+                col3.axis[j] = mesh.vertices[mesh.indices[i + 2]].colour.axis[j];
+            }
+
+
+            colour = (col1 * u) +
+                (col2 * v) +
+                (col3 * w);
             return true;
         }
     }
@@ -101,9 +120,15 @@ bool Object::Hit(const Ray& ray, HitRecord& rec)
             if (rec.t > t)
             {
                 w = (1 - u - v);
-                rec.colour = (Vec3(mesh.vertices[mesh.indices[i]].colour) * u) +
-                    (Vec3(mesh.vertices[mesh.indices[i + 1]].colour) * v) +
-                    (Vec3(mesh.vertices[mesh.indices[i + 2]].colour) * w);
+                Vec3 col1, col2, col3;
+                for (size_t j = 0; j < 3; j++)
+                {
+                    col1.axis[j] = mesh.vertices[mesh.indices[i]].colour.axis[j];
+                    col2.axis[j] = mesh.vertices[mesh.indices[i + 1]].colour.axis[j];
+                    col3.axis[j] = mesh.vertices[mesh.indices[i + 2]].colour.axis[j];
+                }
+
+                rec.colour = (col1 * u) + (col2 * v) + (col3 * w);
                 rec.t = t;
                 return true;
             }
@@ -125,9 +150,15 @@ void Object::Hit(const Ray& ray, std::vector<HitRecord>& hits)
             HitRecord hit;
             hit.t = t;
             w = (1 - u - v);
-            hit.colour = (Vec3(mesh.vertices[mesh.indices[i]].colour) * w) +
-                (Vec3(mesh.vertices[mesh.indices[i + 1]].colour) * u) +
-                (Vec3(mesh.vertices[mesh.indices[i + 2]].colour) * v);
+            Vec3 col1, col2, col3;
+            for (size_t j = 0; j < 3; j++)
+            {
+                col1.axis[j] = mesh.vertices[mesh.indices[i]].colour.axis[j];
+                col2.axis[j] = mesh.vertices[mesh.indices[i + 1]].colour.axis[j];
+                col3.axis[j] = mesh.vertices[mesh.indices[i + 2]].colour.axis[j];
+            }
+
+            hit.colour = (col1 * u) + (col2 * v) + (col3 * w);
             hits.push_back(hit);
         }
     }
@@ -262,4 +293,8 @@ void Object::SetCenter(Vec3 _center)
     {
         tris[i].Update();
     }
+}
+
+void Object::Update()
+{
 }

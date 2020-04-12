@@ -32,10 +32,10 @@ public:
 
 	std::array<float, 2> axis;
 
-	void MakeUnitVector();
+	void Normalise();
 };
 
-inline void Vec2::MakeUnitVector()
+inline void Vec2::Normalise()
 {
 	float k = 1.0 / Length();
 	axis[0] *= k;
@@ -82,7 +82,4 @@ inline Vec2 operator-(const Vec2& v1, const Vec2& v2)
 	return Vec2(v1.axis[0] - v2.axis[0], v1.axis[1] - v2.axis[1]);
 }
 
-inline Vec2 UnitVector(Vec2 v)
-{
-	return v / v.Length();
-}
+inline Vec2 Normalise(Vec2 v) { return v / v.Length(); }

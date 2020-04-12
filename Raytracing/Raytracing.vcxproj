@@ -147,6 +147,7 @@
     <ClCompile Include="Bounds.cpp" />
     <ClCompile Include="BVH.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DebugPrinter.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="Locator.cpp" />
     <ClCompile Include="main.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="ThreadManager.cpp" />
     <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="Utilities.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
     <ClCompile Include="Vec4.cpp" />
@@ -167,6 +169,7 @@
     <ClInclude Include="BVH.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Constants.h" />
+    <ClInclude Include="DebugPrinter.h" />
     <ClInclude Include="HitRecord.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="Light.h" />
