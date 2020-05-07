@@ -4,6 +4,7 @@
 #include "Ray.h"
 #include "HitRecord.h"
 #include "Image.h"
+#include "Light.h"
 
 #include <memory>
 #include <thread>
@@ -58,7 +59,7 @@ struct SplitCost
 struct Node {
 
 	Node() = default;
-	Node(std::vector<Triangle>* _tris) : tris(*_tris)
+	Node(std::vector<Triangle>* _tris)
 	{
 		bb.Load(*_tris);	
 	}
@@ -67,10 +68,11 @@ struct Node {
 	std::unique_ptr<Node> leftNode;
 	std::unique_ptr<Node> rightNode;
 
-	std::vector<Triangle> tris;
+	std::vector<Triangle*> tris;
 	Bounds bb;
 	std::array<std::vector<float>, 3> axisSplits;
 	//std::array<std::vector<std::pair<int, float>>, 3> axisSplits;
+	int level = 0;
 	SplitCost splitCost;
 	bool isLeaf = false;
 };
@@ -97,15 +99,19 @@ public:
 
 	int TrisLessThan(Node* _node, int axis, float value);
 
-	void Search(const Ray& ray, std::vector<HitRecord>& hits, Image& img);
+	void Search(Ray& ray, std::vector<HitRecord>& hits, std::vector<Light>& lights, Image& img);
 
 	void Search(const Ray& ray, std::vector<HitRecord>& hits);
 
-	void Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node, Image& img);
+	void Search(Ray& ray, std::vector<HitRecord>& hits, Node* _node, std::vector<Light>& lights, Image& img);
 
 	void Search(const Ray& ray, std::vector<HitRecord>& hits, Node* _node);
 
-	bool Search(const Ray& ray, Node* _node);
+	bool SearchShad(Ray& ray, HitRecord& hitTri, Light& light, Node* _node);
+
+	//bool SearchShad(Ray& ray, std::vector<HitRecord>& hits, Node* _node);
+
+	bool Search(Ray& ray, Node* _node);
 
 	void Destroy();
 
@@ -122,6 +128,6 @@ private:
 
 	std::array<std::vector<float>, 3> axisSplits;
 
-	float leafCost = 500.0f;
+	float leafCost = 600.0f;
 };
 

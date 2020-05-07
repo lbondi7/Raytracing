@@ -45,7 +45,7 @@ public:
 		return v1.axis[0] * v2.axis[0] + v1.axis[1] * v2.axis[1] + v1.axis[2] * v2.axis[2] + v1.axis[3] * v2.axis[3];
 	}
 
-	std::array<float, 4> axis;
+	std::array<float, 4> axis{0.0f, 0.0f, 0.0f, 0.0f};
 
 	void Normalise();
 };

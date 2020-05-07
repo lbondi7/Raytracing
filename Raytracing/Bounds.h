@@ -13,6 +13,8 @@ struct Bounds
 
 	void Load(const std::vector<Triangle>& _tris);
 
+	void Load(const std::vector<Triangle*>& _tris);
+
 	void Load(const std::vector<Vec3>& positions);
 
 	void operator=(const Bounds& bb);

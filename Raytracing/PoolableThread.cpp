@@ -31,13 +31,14 @@ void PoolableThread::Run()
 		if (!idle && func)
 		{
 			//std::cout << "thread: (" << std::this_thread::get_id() << ") is executing!" << std::endl;
-			DebugPrinter::Print("thread: (" + std::to_string(id) + ") is executing!");
+			//DebugPrinter::Print("thread: (" + std::to_string(id) + ") is executing!");
 			func();
-			idle = true;
 			func = nullptr;
+			idle = true;
+			//DebugPrinter::Print("thread: (" + std::to_string(id) + ") is finished!");
 		}
 		else
-			std::this_thread::sleep_for(10ms);
+			std::this_thread::sleep_for(0.5ms);
 	}
 	destroyed = true;
 }

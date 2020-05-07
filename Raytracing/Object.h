@@ -4,6 +4,7 @@
 #include "Bounds.h"
 #include "Triangle.h"
 #include "HitRecord.h"
+#include "Transform.h"
 #include "Matrix.h"
 
 class Object
@@ -17,17 +18,9 @@ public:
 
 	void Load(const std::string& mesh, const Vec3& _center);
 
-	Vec3 HitObject(const Ray& ray);
+	void Load(const std::string& mesh, const Vec3& _center, int _id);
 
-	bool Hit(const Ray& ray, Vec3& colour);
-
-	bool Hit(const Ray& ray, HitRecord& rec);
-
-	void Hit(const Ray& ray, std::vector<HitRecord>& hits);
-
-	bool HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2, float& t, float& u, float& v);
-
-	bool HitTriangle(const Ray& ray, const Vec3& v0, const Vec3& v1, const Vec3& v2, float& t, float& u, float& v, HitRecord& rec);
+	void Load(const std::string& meshType, const Transform& _tran, int _id);
 
 	void SetCenter(Vec3 _center);
 
@@ -42,7 +35,11 @@ public:
 	Bounds boundingBox;
 
 	bool isLight = false;
-
+	int id = 0;
 	Matrix objectMatrix;
+
+	Transform transform;
+
+	bool update = false;
 };
 

@@ -16,5 +16,7 @@ public:
 	Vec3 direction;
 	Vec3 invDirection;
 	int sign[3];
+
+	void operator = (const Ray& ray);
 };
 

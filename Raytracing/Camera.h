@@ -9,11 +9,8 @@ class Camera
 {
 public:
 	Camera() = default;
-	Camera(const Vec3& pos) { position = pos; }
-	Camera(const Vec3& pos, const Vec3& lookAt);
 
-	inline void SetPos(const Vec3& pos) { position = pos; }
-	inline const Vec3& GetPos() { return position; }
+	void Setup(Vec3 _origin, Vec3 lookAt, Vec3 up, float fov, float aspectRatio, float focus_dist);
 
 	inline void SetLookAt(const Vec3& pos) { lookAtPos = pos; }
 	inline const Vec3& GetLookAt() { return lookAtPos; }
@@ -21,11 +18,18 @@ public:
 	void SetViewMatrix();
 	inline const Matrix& GetViewMatrix() { return view; }
 
-private:
+    //ray get_ray(float s, float t) {
+    //    vec3 rd = lens_radius * random_in_unit_disk();
+    //    vec3 offset = u * rd.x() + v * rd.y();
+    //    return ray(origin + offset, lower_left_corner + s * horizontal + t * vertical - origin - offset);
+    //}
 
-	Vec3 position;
+    Vec3 position;
+    Vec3 lower_left_corner;
+    Vec3 horizontal;
+    Vec3 vertical;
 	Vec3 lookAtPos;
-
+	Vec3 u, v, w;
 	Matrix view;
 };
 

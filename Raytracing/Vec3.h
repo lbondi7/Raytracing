@@ -33,6 +33,16 @@ public:
 
 	inline float Length() const { return sqrt(axis[0] * axis[0] + axis[1] * axis[1] + axis[2] * axis[2]); }
 
+	inline float Dot(Vec3& v) {
+		return axis[0] * v.axis[0] + axis[1] * v.axis[1] + axis[2] * v.axis[2];
+	}
+
+	inline Vec3 Cross(const Vec3& v) {
+		return Vec3((axis[1] * v.axis[2] - axis[2] * v.axis[1]),
+			-(axis[0] * v.axis[2] - axis[2] * v.axis[0]),
+			(axis[0] * v.axis[1] - axis[1] * v.axis[0]));
+	}
+
 	static inline float Dot(const Vec3& v1, const Vec3& v2){
 		return v1.axis[0] * v2.axis[0] + v1.axis[1] * v2.axis[1] + v1.axis[2] * v2.axis[2];
 	}
@@ -51,12 +61,12 @@ public:
 
 	void Normalise();
 
-	std::array<float, 3> axis;
+	std::array<float, 3> axis{0.0f, 0.0f, 0.0f};
 };
 
 inline void Vec3::Normalise()
 {
-	float k = 1.0f / Length();
+	auto k = 1.0f / Length();
 	axis[0] *= k;
 	axis[1] *= k; 
 	axis[2] *= k;

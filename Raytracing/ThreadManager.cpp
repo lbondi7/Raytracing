@@ -1,9 +1,15 @@
 #include "ThreadManager.h"
 // ThreadManager.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+
+#include "DebugPrinter.h"
+
 #include <iostream>
 
-const int maxThreadCount = 7;
+std::mutex ThreadManager::threadsMutex;
+std::mutex ThreadManager::threadsMutex2;
+
+const int maxThreadCount = std::thread::hardware_concurrency() * 2;
 
 ThreadManager::ThreadManager(int numOfThreads)
 {
@@ -25,7 +31,7 @@ ThreadManager::~ThreadManager()
 				if (threads[i]->IsDestroyed())
 				{
 					threads[i].release();
-					std::cout << "thread: " << i << " was destroyed!" << std::endl;
+					//std::cout << "thread: " << i << " was destroyed!" << std::endl;
 				}
 			}
 			else
@@ -49,14 +55,38 @@ void ThreadManager::Init(int numOfThreads)
 
 std::function<void()>& ThreadManager::SetTask(bool _perminate)
 {
-	for (size_t i = 0; i < threads.size(); i++)
+	while (true)
 	{
-		if (threads[i])
+		for (auto& t : threads)
 		{
-			if (threads[i]->IsAlive() && threads[i]->IsIdle())
+			if (t)
 			{
-				threads[i]->SetIdle(false);
-				return threads[i]->func;
+				if (t->IsAlive() && t->IsIdle())
+				{
+					t->SetIdle(false);
+					t->SetPermanent(_perminate);
+					return t->func;
+				}
+			}
+		}
+	}
+}
+
+std::function<void()>& ThreadManager::SetTask(bool _perminate, int& threadID)
+{
+	while (true)
+	{
+		for (auto& t : threads)
+		{
+			if (t)
+			{
+				if (t->IsAlive() && t->IsIdle())
+				{
+					t->SetIdle(false);
+					t->SetPermanent(_perminate);
+					threadID = t->id;
+					return t->func;
+				}
 			}
 		}
 	}
@@ -64,15 +94,51 @@ std::function<void()>& ThreadManager::SetTask(bool _perminate)
 
 bool ThreadManager::IsExecutingTask()
 {
-	for (size_t i = 0; i < threads.size(); i++)
+	for (auto& t : threads)
 	{
-		if (threads[i])
+		if (t)
 		{
-			if (threads[i]->IsAlive() && !threads[i]->IsIdle())
+			if (t->IsAlive() && !t->IsIdle())
 			{
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+void ThreadManager::WaitForAllThreads()
+{
+	std::lock_guard<std::mutex> lock(threadsMutex);
+	bool wait = true;
+	while (wait)
+	{
+		wait = false;
+		for (auto& t : threads)
+		{
+			if (t && t->IsAlive() &&
+				!t->IsPermanent() && !t->IsIdle())
+			{
+				wait = true;
+			}
+		}
+	}
+}
+
+void ThreadManager::WaitForThreads(std::vector<int>& ths)
+{
+	std::lock_guard<std::mutex> lock(threadsMutex2);
+	bool wait = true;
+	while (wait)
+	{
+		wait = false;
+		for (auto t : ths)
+		{
+			if (threads[t] && threads[t]->IsAlive() &&
+				!threads[t]->IsPermanent() && !threads[t]->IsIdle())
+			{
+				wait = true;
+			}
+		}
+	}
 }

@@ -9,7 +9,7 @@ struct Locator
 
 	static MeshLoading* GetMeshes() { return meshes; }
 
-	static void InitTM(ThreadManager* _tm) { tm = _tm; }
+	static void InitTM(ThreadManager* _tm) { if(!tm) tm = _tm; }
 
 	static ThreadManager* GetTM() { return tm; }
 

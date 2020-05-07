@@ -3,6 +3,8 @@
 #include "ThreadManager.h"
 #include "Constants.h"
 
+#include <imgui.h>
+
 int main()
 {
     Scene scene;
@@ -16,27 +18,41 @@ int main()
     Locator::GetMeshes()->Load("cube2");
     Locator::GetMeshes()->Load("dog");
     Locator::GetMeshes()->Load("dog2");
-    Locator::GetMeshes()->Load("iso");
+    Locator::GetMeshes()->Load("square");
     Locator::GetMeshes()->Load("triangle");
+    Locator::GetMeshes()->Load("iso");
 
-    Locator::InitTM(new ThreadManager(6));
+
+#if THREADED_BUILD
+    Locator::InitTM(new ThreadManager(7));
+#elif THREADED_TRAVERSE
+    Locator::InitTM(new ThreadManager(7));
+#endif
 
     sf::Event event;
 
-    scene.Init(&window);
+    Output output;
 
+    output.Update(1);
+    scene.Init(&window);
     while (!scene.Exit())
     {
+        output.Update(2);
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
+            {
                 window.close();
+                scene.Exit(true);
+                output.Outputy();
+            }
+
         }
-
         scene.Update();
-        scene.Render();
-    }
 
+        scene.Render();
+        window.display();
+    }
 
     return 0;
 }

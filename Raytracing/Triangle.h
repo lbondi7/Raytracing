@@ -21,12 +21,22 @@ struct Triangle
 
 	bool Hit(const Ray& ray, float& t, float& u, float& v);
 
+	bool MTHit(Ray& ray, float& t, float& u, float& v);
+
+	bool ShadowMTHit(Ray& ray, float& t, float& u, float& v);
+
+	bool LewisHit(Ray& ray, float& t, float& u, float& v);
+
 	void Update();
 
 	std::array<Vertex, 3> vertices;
 	Vec3 normal;
+	Vec3 normalNN;
 	std::array<float, 3> minPoints;
 	std::array<Vec3, 3> edges;
+	Vec3 otherEdge;
+	int tri_id = 0;
+	int obj_id = 0;
 
 	Vec3* objectCenter = nullptr;
 	Image* image = nullptr;
